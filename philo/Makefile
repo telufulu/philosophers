@@ -1,4 +1,4 @@
-NAME		=	Philosophers
+NAME		=	philo
 CC			=	cc
 CFLAGS		=	-Wall -Werror -Wextra -fsanitize=address -g3 -I $(INC)
 INC			=	inc/
@@ -6,7 +6,7 @@ INC			=	inc/
 SRCS		=	$(addprefix $(SRCS_DIR), $(SRCS_FILES))
 OBJS		=	$(addprefix $(OBJS_DIR), $(OBJS_FILES))
 OBJS_FILES	=	$(SRCS_FILES:%.c=%.o)
-SRCS_FILES	=	philosophers.c
+SRCS_FILES	=	philosophers.c libft_utils.c
 SRCS_DIR	=	srcs/
 OBJS_DIR	=	objs/
 
