@@ -29,14 +29,14 @@ WHITE		=	\033[0;97m
 all:	$(NAME)
 
 $(NAME):	$(OBJS)
-	echo "\nCompiling $(BLUE)$(NAME)$(DEF_COLOR)"
 	$(CC) $(CFLAGS) $(OBJS) -o $(NAME)
 	echo "$(BLUE)\n------------\n| Done! 👌 |\n------------\$(DEF_COLOR)"
 
 $(OBJS_DIR)%.o:	$(SRCS_DIR)%.c
-	[ -d $(OBJS_DIR) ] | mkdir -p $(OBJS_DIR)
+	if [ ! -d $(OBJS_DIR) ]; then echo "\nCompiling $(BLUE)$(NAME)$(DEF_COLOR)"; fi	
+	mkdir -p $(OBJS_DIR)
 	$(CC) $(CFLAGS) -c $< -o $@
-	printf "\33[2K\r$(GRAY)$(CC) $(CFLAGS) -c $< -o $@$(DEF_COLOR)"
+	echo  "\33[2K\r$(GRAY)$(CC) $(CFLAGS) -c $< -o $@$(DEF_COLOR)"
 
 clean:
 	echo "\nCleaning$(BLUE)...$(DEF_COLOR)"
