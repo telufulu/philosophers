@@ -6,7 +6,7 @@
 /*   By: telufulu <telufulu@student.42madrid>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/18 17:45:25 by telufulu          #+#    #+#             */
-/*   Updated: 2024/04/04 22:35:36 by telufulu         ###   ########.fr       */
+/*   Updated: 2024/04/07 18:52:01 by telufulu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,11 +23,22 @@
 # include <stdlib.h>
 # include <stdio.h>
 
+
+// Philo flags
+# define NO_CHANGE 	00000000
+# define FORK 		00000001
+# define EAT 		00000010
+# define SLEEP 		00000100
+# define THINK		00001000
+# define DEAD		00010000
+
 typedef struct s_philo
 {
 	void			*prev;
 	pthread_t		philo;
 	pthread_mutex_t	fork;
+	int				num_philo;
+	char			flags;
 	void			*next;
 }				t_philo;
 
