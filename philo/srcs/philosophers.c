@@ -6,24 +6,19 @@
 /*   By: telufulu <telufulu@student.42madrid>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/18 17:45:52 by telufulu          #+#    #+#             */
-/*   Updated: 2024/04/08 16:52:12 by telufulu         ###   ########.fr       */
+/*   Updated: 2024/04/08 16:57:00 by telufulu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
 
-void	*say_hi(void *arg)
+void	*philo_routine(void *arg)
 {
 	t_philo	*aux;
-	int	i;
-
-	i = 10;
+	
 	aux = (t_philo *)arg;
-	while (--i)
+	while (aux->flags & DEAD)
 	{
-		usleep(1000000);
-		if (aux->num_philo == 5 && i == 6)
-			aux->flags |= DEAD;
 	}
 	return (0);
 }
@@ -37,17 +32,17 @@ t_philo	*new_thread(t_philo *philo, int num)
 		return (NULL);
 	aux->prev = philo;
 	aux->num_philo = num;
-	pthread_create(&aux->philo, NULL, say_hi, aux);
+	pthread_create(&aux->philo, NULL, philo_routine, aux);
 	return (aux);
 }
 
-void	create_philos(t_philo **first, int num_of_philos)
+void	create_philos(t_philo **first, char **argv)
 {
 	t_philo	*aux;
 	int		i;
 
-	i = 1;
-	(*first) = new_thread(NULL, i++);
+	i = 0;
+	(*first) = new_thread(NULL, ++i);
 	aux = (*first);
 	while (i <= num_of_philos)
 	{
