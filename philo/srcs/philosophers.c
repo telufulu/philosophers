@@ -6,7 +6,7 @@
 /*   By: telufulu <telufulu@student.42madrid>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/18 17:45:52 by telufulu          #+#    #+#             */
-/*   Updated: 2024/04/07 19:00:39 by telufulu         ###   ########.fr       */
+/*   Updated: 2024/04/08 16:52:12 by telufulu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,19 +14,21 @@
 
 void	*say_hi(void *arg)
 {
+	t_philo	*aux;
 	int	i;
 
 	i = 10;
+	aux = (t_philo *)arg;
 	while (--i)
 	{
 		usleep(1000000);
-		printf("Hi! I'm %p\n", arg);
+		if (aux->num_philo == 5 && i == 6)
+			aux->flags |= DEAD;
 	}
-	arg->flags = arg->flags & DEAD;
 	return (0);
 }
 
-t_philo	*new_thread(t_philo *philo)
+t_philo	*new_thread(t_philo *philo, int num)
 {
 	t_philo	*aux;
 
@@ -34,6 +36,7 @@ t_philo	*new_thread(t_philo *philo)
 	if (!aux)
 		return (NULL);
 	aux->prev = philo;
+	aux->num_philo = num;
 	pthread_create(&aux->philo, NULL, say_hi, aux);
 	return (aux);
 }
@@ -41,13 +44,16 @@ t_philo	*new_thread(t_philo *philo)
 void	create_philos(t_philo **first, int num_of_philos)
 {
 	t_philo	*aux;
-	
-	(*first) = new_thread(NULL);
+	int		i;
+
+	i = 1;
+	(*first) = new_thread(NULL, i++);
 	aux = (*first);
-	while (--num_of_philos)
+	while (i <= num_of_philos)
 	{
-		aux->next = new_thread(aux);
+		aux->next = new_thread(aux, i);
 		aux = aux->next;
+		++i;
 	}
 	(*first)->prev = aux;
 	aux->next = (*first);
@@ -55,23 +61,24 @@ void	create_philos(t_philo **first, int num_of_philos)
 
 void	*print_status(void *arg)
 {
-	pthread_t	*philos;
+	t_philo	*philos;
 
-	philos = (ptherad_t *)arg;
-	while (!(philos->flags & 16))
+	philos = (t_philo *)arg;
+	while (!(philos->flags & DEAD))
 	{
 		if (philos->flags & FORK)
-			printf("%i has taken a fork", philos->num_philo);
+			printf("%i has taken a fork\n", philos->num_philo);
 		if (philos->flags & EAT)
-			printf("%i is eating", philos->num_philo);
+			printf("%i is eating\n", philos->num_philo);
 		if (philos->flags & SLEEP)
-			printf("%i is sleaping", philos->num_philo);
+			printf("%i is sleaping\n", philos->num_philo);
 		if (philos->flags & THINK)
-			printf("%i is thinking", philos->num_philo);
+			printf("%i is thinking\n", philos->num_philo);
 		philos = philos->next;
 	}
 	if (philos->flags & DEAD)
-		printf("%i is dead", philos->num_philo);
+		printf("%i is dead\n", philos->num_philo);
+	return (0);
 }
 
 int	main(int argc, char **argv)
@@ -86,7 +93,7 @@ int	main(int argc, char **argv)
 		if (!philosophers || !philosophers->prev)
 			return (ft_error("Fallo al crear hilo"));
 		pthread_create(&msg, NULL, print_status, philosophers);
-		pthread_join(philosophers->philo, NULL);
+		pthread_join(msg, NULL);
 	}
 	else
 		return (ft_error(argv[1]));

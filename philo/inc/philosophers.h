@@ -6,7 +6,7 @@
 /*   By: telufulu <telufulu@student.42madrid>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/18 17:45:25 by telufulu          #+#    #+#             */
-/*   Updated: 2024/04/07 18:52:01 by telufulu         ###   ########.fr       */
+/*   Updated: 2024/04/08 16:52:13 by telufulu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,12 +25,12 @@
 
 
 // Philo flags
-# define NO_CHANGE 	00000000
-# define FORK 		00000001
-# define EAT 		00000010
-# define SLEEP 		00000100
-# define THINK		00001000
-# define DEAD		00010000
+# define NO_CHANGE 	0
+# define FORK 		1
+# define EAT 		2
+# define SLEEP 		4
+# define THINK		8
+# define DEAD		16
 
 typedef struct s_philo
 {
@@ -43,9 +43,6 @@ typedef struct s_philo
 }				t_philo;
 
 // main.c
-void		create_philos(t_philo **first, int num_of_philos);
-t_philo		*new_thread(t_philo *philo);
-void		*say_hi(void *arg);
 
 // libft_utils.c
 int		ft_isspace(int c);
