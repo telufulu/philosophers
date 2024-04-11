@@ -6,7 +6,7 @@
 /*   By: telufulu <telufulu@student.42madrid>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/18 17:45:25 by telufulu          #+#    #+#             */
-/*   Updated: 2024/04/11 17:42:13 by telufulu         ###   ########.fr       */
+/*   Updated: 2024/04/11 22:36:11 by telufulu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,12 +34,12 @@
 
 typedef struct s_config
 {
-	char	dead_flag;
-	size_t	time_die;
-	size_t	time_eat;
-	size_t	time_sleep;
-	size_t	start_time;	
-	int		num_philos;
+	char		dead_flag;
+	long int	time_die;
+	long int	time_eat;
+	long int	time_sleep;
+	long int	start_time;	
+	int			num_philos;
 }				t_config;
 
 typedef struct s_philo
@@ -47,7 +47,7 @@ typedef struct s_philo
 	struct s_philo	*prev;
 	pthread_t		philo;
 	pthread_mutex_t	fork;
-	int				num_philo;
+	int				num;
 	char			flags;
 	t_config		*config;
 	struct s_philo	*next;
@@ -55,13 +55,16 @@ typedef struct s_philo
 
 // main.c
 
+// routines.c
+
 // set_philos.c
 t_philo	*create_philos(t_config *config);
 void	*philo_routine(void *arg);
 
 // utils.c
 t_config	*get_config(char **argv);
-size_t		get_time(void);
+long int	get_time(void);
+void		*print_msg(void *arg);
 
 // libft_utils.c
 int		ft_isspace(int c);

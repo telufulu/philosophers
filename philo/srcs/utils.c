@@ -6,7 +6,7 @@
 /*   By: telufulu <telufulu@student.42madrid>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/09 16:12:36 by telufulu          #+#    #+#             */
-/*   Updated: 2024/04/11 15:51:06 by telufulu         ###   ########.fr       */
+/*   Updated: 2024/04/11 22:40:10 by telufulu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,14 +23,49 @@ t_config	*get_config(char **argv)
 	res->time_die = ft_atoi(argv[2]);
 	res->time_eat = ft_atoi(argv[3]);
 	res->time_sleep = ft_atoi(argv[4]);
+	res->time_sleep = ft_atoi(argv[4]);
 	res->start_time = get_time();
 	return (res);
 }
 
-size_t	get_time(void)
+long int	get_time(void)
 {
 	struct timeval	start;
 
 	gettimeofday(&start, NULL);
-	return (start.tv_sec * 1000 + start.tv_sec);
+	return ((long int)start.tv_sec * 1000);
+}
+
+void	*print_msg(void *arg)
+{
+	t_philo		*philos;
+	long int	time;
+
+	philos = (t_philo *)arg;
+	time = philos->config->start_time;
+	while (!philos->config->dead_flag)
+	{
+		if (philos->flags & THINK)
+		{
+			philos->flags ^= THINK;
+			printf("%zums %i is thinking\n", get_time() - time, philos->num);
+		}
+		if (philos->flags & EAT)
+		{
+			philos->flags ^= EAT;
+			printf("%zums %i is eating\n", get_time() - time, philos->num);
+		}
+		if (philos->flags & SLEEP)
+		{
+			philos->flags ^= SLEEP;
+			printf("%zums %i is sleeping\n", get_time() - time, philos->num);
+		}
+		if (philos->flags & DEAD)
+		{
+			philos->config->dead_flag = 1;
+			printf("%zums %i is dead\n", get_time() - time, philos->num);
+		}
+		philos = philos->next;
+	}
+	return (0);
 }
