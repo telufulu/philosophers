@@ -1,31 +1,36 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   prueba.c                                           :+:      :+:    :+:   */
+/*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: telufulu <telufulu@student.42madrid>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/04/08 19:04:09 by telufulu          #+#    #+#             */
-/*   Updated: 2024/04/08 21:09:22 by telufulu         ###   ########.fr       */
+/*   Created: 2024/04/09 16:12:36 by telufulu          #+#    #+#             */
+/*   Updated: 2024/04/11 15:51:06 by telufulu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <sys/time.h>
-#include <stdio.h>
+#include "philosophers.h"
 
-int	main()
+t_config	*get_config(char **argv)
 {
-	struct timeval 	start;
-	struct timeval	current;
-	size_t	time;
+	t_config	*res;
+
+	res = ft_calloc(sizeof(t_config), 1);
+	if (!res)
+		return (0);
+	res->num_philos = ft_atoi(argv[1]);
+	res->time_die = ft_atoi(argv[2]);
+	res->time_eat = ft_atoi(argv[3]);
+	res->time_sleep = ft_atoi(argv[4]);
+	res->start_time = get_time();
+	return (res);
+}
+
+size_t	get_time(void)
+{
+	struct timeval	start;
 
 	gettimeofday(&start, NULL);
-	time = start.tv_sec * 1000 + start.tv_usec;
-	printf("time: %zu\n", time);
-	printf("start time: %.2ld\n", start.tv_sec);
-	current.tv_usec = start.tv_usec;
-	//while (current.tv_usec < start.tv_usec)
-	//	gettimeofday(&current, NULL);
-	//printf("time: %.2d\n", current.tv_usec - start.tv_usec);
-	return (0);
+	return (start.tv_sec * 1000 + start.tv_sec);
 }
