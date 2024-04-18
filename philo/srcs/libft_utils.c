@@ -6,16 +6,16 @@
 /*   By: telufulu <telufulu@student.42madrid>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/04 17:41:30 by telufulu          #+#    #+#             */
-/*   Updated: 2024/04/05 13:36:03 by telufulu         ###   ########.fr       */
+/*   Updated: 2024/04/18 20:21:47 by telufulu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
 
-int	ft_atoi(const char *str)
+long int	ft_atoli(const char *str)
 {
-	int	res;
-	int	neg;
+	long int	res;
+	long int	neg;
 
 	neg = 1;
 	res = 0;

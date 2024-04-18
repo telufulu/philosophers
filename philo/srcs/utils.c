@@ -6,7 +6,7 @@
 /*   By: telufulu <telufulu@student.42madrid>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/09 16:12:36 by telufulu          #+#    #+#             */
-/*   Updated: 2024/04/11 22:40:10 by telufulu         ###   ########.fr       */
+/*   Updated: 2024/04/18 20:14:40 by telufulu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,11 +19,10 @@ t_config	*get_config(char **argv)
 	res = ft_calloc(sizeof(t_config), 1);
 	if (!res)
 		return (0);
-	res->num_philos = ft_atoi(argv[1]);
-	res->time_die = ft_atoi(argv[2]);
-	res->time_eat = ft_atoi(argv[3]);
-	res->time_sleep = ft_atoi(argv[4]);
-	res->time_sleep = ft_atoi(argv[4]);
+	res->num_philos = ft_atoli(argv[1]);
+	res->time_die = ft_atoli(argv[2]);
+	res->time_eat = ft_atoli(argv[3]);
+	res->time_sleep = ft_atoli(argv[4]);
 	res->start_time = get_time();
 	return (res);
 }
