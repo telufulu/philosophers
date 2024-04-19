@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: telufulu <telufulu@student.42madrid>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/04/18 20:39:22 by telufulu          #+#    #+#             */
-/*   Updated: 2024/04/18 21:02:02 by telufulu         ###   ########.fr       */
+/*   Created: 2024/04/11 15:50:33 by telufulu          #+#    #+#             */
+/*   Updated: 2024/04/19 18:28:51 by telufulu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,4 +33,5 @@ t_philo	*create_philos(t_config *config)
 	{
 		res = add_philo();
 	}
+	return (res);
 }

@@ -6,7 +6,7 @@
 /*   By: telufulu <telufulu@student.42madrid>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/09 16:12:36 by telufulu          #+#    #+#             */
-/*   Updated: 2024/04/18 20:14:40 by telufulu         ###   ########.fr       */
+/*   Updated: 2024/04/19 18:29:03 by telufulu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,36 +35,31 @@ long int	get_time(void)
 	return ((long int)start.tv_sec * 1000);
 }
 
-void	*print_msg(void *arg)
+void	message(t_philo *philo, pthread_mutex_t *stop, int flag, char *msg)
 {
-	t_philo		*philos;
-	long int	time;
+	long int	time_ms;
 
-	philos = (t_philo *)arg;
-	time = philos->config->start_time;
-	while (!philos->config->dead_flag)
+	pthread_mutex_lock(stop);
+	time_ms = get_time() - philo->config->start_time;
+	printf("%lims %i is %s", time_ms, philo->num, msg);
+	philo->flags ^= flag;
+	pthread_mutex_unlock(stop);
+}
+
+void	print_msg(t_philo *philos)
+{
+	pthread_mutex_t	stop;
+
+	pthread_mutex_init(&stop, NULL);
+	if (philos->num)
 	{
-		if (philos->flags & THINK)
-		{
-			philos->flags ^= THINK;
-			printf("%zums %i is thinking\n", get_time() - time, philos->num);
-		}
 		if (philos->flags & EAT)
-		{
-			philos->flags ^= EAT;
-			printf("%zums %i is eating\n", get_time() - time, philos->num);
-		}
-		if (philos->flags & SLEEP)
-		{
-			philos->flags ^= SLEEP;
-			printf("%zums %i is sleeping\n", get_time() - time, philos->num);
-		}
-		if (philos->flags & DEAD)
-		{
-			philos->config->dead_flag = 1;
-			printf("%zums %i is dead\n", get_time() - time, philos->num);
-		}
-		philos = philos->next;
+			message(philos, &stop, EAT, "eating\n");
+		else if (philos->flags & SLEEP)
+			message(philos, &stop, SLEEP, "sleeping\n");
+		else if (philos->flags & THINK)
+			message(philos, &stop, THINK, "thinking\n");
+		else if (philos->flags & DEAD)
+			message(philos, &stop, DEAD, "dead\n");
 	}
-	return (0);
 }
