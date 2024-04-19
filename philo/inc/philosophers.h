@@ -6,11 +6,7 @@
 /*   By: telufulu <telufulu@student.42madrid>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/18 17:45:25 by telufulu          #+#    #+#             */
-<<<<<<< HEAD
-/*   Updated: 2024/04/18 21:02:09 by telufulu         ###   ########.fr       */
-=======
-/*   Updated: 2024/04/13 00:25:00 by telufulu         ###   ########.fr       */
->>>>>>> c05ba487d7061c8cb137341d53f8dd5ce1c4984f
+/*   Updated: 2024/04/19 19:42:45 by telufulu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,12 +34,13 @@
 
 typedef struct s_config
 {
-	char		dead_flag;
-	int			num_philos;
-	long int	time_die;
-	long int	time_eat;
-	long int	time_sleep;
-	long int	start_time;	
+	char			dead_flag;
+	int				num_philos;
+	long int		time_die;
+	long int		time_eat;
+	long int		time_sleep;
+	long int		start_time;	
+	pthread_mutex_t	stop;
 }				t_config;
 
 typedef struct s_philo
@@ -58,20 +55,21 @@ typedef struct s_philo
 }				t_philo;
 
 // main.c
+void	lock_threads(t_philo *philos, int num_philos);
 
 // routines.c
-int		check_dead(t_philo *philo, long int *time_dying);
-void	philo_eat(t_philo *philo, long int *time_dying);
-void	philo_sleep(t_philo *philo, long int *time_dying);
-void	*philo_routine(void *arg);
+void		*philo_routine(void *arg);
 
 // set_philos.c
-t_philo	*create_philos(t_config *config);
+int			init_philo(t_philo *prev, t_philo *res, int num, t_config *config);
+int			free_list(t_philo *res);
+int			add_philo(t_philo *res, int i, t_config *config);
+t_philo 	*create_philos(t_config *config);
 
 // utils.c
 t_config	*get_config(char **argv);
 long int	get_time(void);
-void		print_msg(t_philo *philos);
+//void		print_msg(t_philo *philos);
 
 // libft_utils.c
 int			ft_isspace(int c);

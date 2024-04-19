@@ -6,7 +6,7 @@
 /*   By: telufulu <telufulu@student.42madrid>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/09 16:12:36 by telufulu          #+#    #+#             */
-/*   Updated: 2024/04/19 18:29:03 by telufulu         ###   ########.fr       */
+/*   Updated: 2024/04/19 19:42:50 by telufulu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,12 +18,14 @@ t_config	*get_config(char **argv)
 
 	res = ft_calloc(sizeof(t_config), 1);
 	if (!res)
-		return (0);
+		return (NULL);
 	res->num_philos = ft_atoli(argv[1]);
 	res->time_die = ft_atoli(argv[2]);
 	res->time_eat = ft_atoli(argv[3]);
 	res->time_sleep = ft_atoli(argv[4]);
 	res->start_time = get_time();
+	if (pthread_mutex_init(&res->stop, NULL))
+		return (NULL);
 	return (res);
 }
 
@@ -35,7 +37,7 @@ long int	get_time(void)
 	return ((long int)start.tv_sec * 1000);
 }
 
-void	message(t_philo *philo, pthread_mutex_t *stop, int flag, char *msg)
+/*void	message(t_philo *philo, pthread_mutex_t *stop, int flag, char *msg)
 {
 	long int	time_ms;
 
@@ -62,4 +64,4 @@ void	print_msg(t_philo *philos)
 		else if (philos->flags & DEAD)
 			message(philos, &stop, DEAD, "dead\n");
 	}
-}
+}*/

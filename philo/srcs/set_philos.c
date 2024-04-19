@@ -6,20 +6,58 @@
 /*   By: telufulu <telufulu@student.42madrid>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/11 15:50:33 by telufulu          #+#    #+#             */
-/*   Updated: 2024/04/19 18:28:51 by telufulu         ###   ########.fr       */
+/*   Updated: 2024/04/19 19:42:52 by telufulu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
 
-t_philo	*add_philo(t_philo *res;)
+int	init_philo(t_philo *prev, t_philo *res, int num, t_config *config)
+{
+	res->prev = prev;
+	if (prev)
+		prev->next = res;
+	res->num = num + 1;
+	res->config = config;
+	if (pthread_mutex_init(&res->fork, NULL))
+		return (1);
+	if (pthread_create(&res->philo, NULL, philo_routine, res))
+		return (1);
+	return (0);
+}
+
+int	free_list(t_philo *res)
+{
+	while (res->prev)
+	{
+		res = res->prev;
+		free(res->next);
+		res->next = NULL;
+	}
+	return (1);
+}
+
+int	add_philo(t_philo *res, int i, t_config *config)
+{
+	while (res->next)
+		res = res->next;
+	res->next = ft_calloc(sizeof(t_philo), 1);
+	if (!res->next)
+		return (free_list(res));
+	if (init_philo(res, res->next, i, config))
+		return (free_list(res));
+	return (0);
+}
+
+void	unit_list(t_philo *res)
 {
 	t_philo	*aux;
-	t_philo
 
 	aux = res;
 	while (aux->next)
 		aux = aux->next;
+	res->prev = aux;
+	aux->next = res;
 }
 
 t_philo	*create_philos(t_config *config)
@@ -28,10 +66,13 @@ t_philo	*create_philos(t_config *config)
 	int		i;
 
 	i = 0;
-	res = 0;
-	while (++i <= config->num_philos)
-	{
-		res = add_philo();
-	}
+	res = ft_calloc(sizeof(t_philo), 1);
+	if (!res)
+		return (NULL);
+	init_philo(0, res, i, config);
+	while (++i < config->num_philos)
+		if (add_philo(res, i, config))
+			return (NULL);
+	unit_list(res);
 	return (res);
 }
