@@ -6,26 +6,31 @@
 /*   By: telufulu <telufulu@student.42madrid>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/09 16:11:11 by telufulu          #+#    #+#             */
-/*   Updated: 2024/04/19 19:42:54 by telufulu         ###   ########.fr       */
+/*   Updated: 2024/04/20 11:19:17 by telufulu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
 
-void	lock_threads(t_philo *philos, int num_philos)
+int	check_dead(t_config *config)
 {
-	while (num_philos--)
-	{
-		pthread_join(philos->philo, NULL);
-		philos = philos->next;
-	}
+	int	i;
+
+	i = 0;
+	pthread_mutex_lock(&config->stop);
+	if (config->dead_flag)
+		++i;
+	pthread_mutex_unlock(&config->stop);
+	return (i);
 }
 
 int	main(int argc, char **argv)
 {
 	t_config	*config;
 	t_philo		*philos;
+	int			check;
 
+	check = 0;
 	if (argc == 5 || argc == 6)
 	{
 		config = get_config(argv);
@@ -34,7 +39,8 @@ int	main(int argc, char **argv)
 		philos = create_philos(config);
 		if (!philos)
 			ft_error("Creation of threads failed\n");
-		lock_threads(philos, config->num_philos);
+		while (!check)
+			check = check_dead(config);
 	}
 	else
 		ft_error("wrong number of arguments. Expected 5 or 6\n");

@@ -6,7 +6,7 @@
 /*   By: telufulu <telufulu@student.42madrid>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/18 17:45:25 by telufulu          #+#    #+#             */
-/*   Updated: 2024/04/19 19:42:45 by telufulu         ###   ########.fr       */
+/*   Updated: 2024/04/20 11:55:29 by telufulu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,13 +49,13 @@ typedef struct s_philo
 	pthread_t		philo;
 	pthread_mutex_t	fork;
 	int				num;
-	char			flags;
+	long int		time_alive;
 	t_config		*config;
 	struct s_philo	*next;
 }				t_philo;
 
 // main.c
-void	lock_threads(t_philo *philos, int num_philos);
+int			check_dead(t_config *config);
 
 // routines.c
 void		*philo_routine(void *arg);

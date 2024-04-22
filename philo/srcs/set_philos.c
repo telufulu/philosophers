@@ -6,7 +6,7 @@
 /*   By: telufulu <telufulu@student.42madrid>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/11 15:50:33 by telufulu          #+#    #+#             */
-/*   Updated: 2024/04/19 19:42:52 by telufulu         ###   ########.fr       */
+/*   Updated: 2024/04/20 11:03:38 by telufulu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,8 @@ int	free_list(t_philo *res)
 		free(res->next);
 		res->next = NULL;
 	}
+	free(res);
+	res = 0;
 	return (1);
 }
 
