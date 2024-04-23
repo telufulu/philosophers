@@ -6,7 +6,7 @@
 /*   By: telufulu <telufulu@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/11 20:43:12 by telufulu          #+#    #+#             */
-/*   Updated: 2024/04/20 12:14:05 by telufulu         ###   ########.fr       */
+/*   Updated: 2024/04/23 20:37:04 by telufulu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,11 +14,11 @@
 
 int	print_state(t_philo *philo, int flag)
 {
-	if (flag == DEAD || get_time() - philo->time_alive > philo->config->time_die)
+	if (flag == DEAD || get_time() - philo->tm_alive > philo->config->time_die)
 	{
-		pthread_mutex_lock(&config->stop);
+		pthread_mutex_lock(&philo->config->stop);
 		++philo->config->dead_flag;
-		pthread_mutex_unlock(&config->stop);
+			pthread_mutex_unlock(&philo->config->stop);
 		printf("philo %i is dead\n", philo->num);
 		return (DEAD);
 	}
@@ -48,40 +48,37 @@ int	take_forks(t_philo *philo, int flag)
 	{
 		pthread_mutex_lock(&philo->prev->fork);
 		if (print_state(philo, FORK))
-			return (DEAD);
+			return (1);
 		pthread_mutex_lock(&philo->fork);
 		if (print_state(philo, FORK))
-			return (DEAD);
+			return (1);
 	}
-	pthread_mutex_unlock(&philo->prev->fork);
+	sleep(1);
 	pthread_mutex_unlock(&philo->fork);
+	pthread_mutex_unlock(&philo->prev->fork);
 	return (0);
 }
 
-int		philo_eat(t_philo *philo)
-{
-	int	start;
-
-	start = get_time();
-	while (get_time() - start < philo->config->time_eat)
-		if (get_time() - philo->start_time > philo->config->time_die)
-			return (print_state(philo, DEAD));
-	return (0);
-}
+//int		philo_eat(t_philo *philo)
+//{
+//}
 
 void	*philo_routine(void *arg)
 {
 	t_philo	*philo;
 
 	philo = (t_philo *)arg;
-	philo->time_alive = get_time();
-	while (check_dead(philo->config))
+	philo->tm_alive = get_time();
+	while (!check_dead(philo->config))
 	{
 		if (take_forks(philo, philo->num % 2) == DEAD)
-			return (NULL);
-		philo->time_alive = get_time();
-		if (philo_eat(philo) == DEAD)
-			return (NULL);
+			print_state(philo, DEAD);
+		else
+		{
+			philo->tm_alive = get_time();
+			//if (philo_eat(philo) == DEAD)
+			//	++philo->config->dead_flag;
+		}
 	}
 	return (NULL);
 } 
