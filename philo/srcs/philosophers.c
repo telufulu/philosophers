@@ -6,7 +6,7 @@
 /*   By: telufulu <telufulu@student.42madrid>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/09 16:11:11 by telufulu          #+#    #+#             */
-/*   Updated: 2024/04/23 20:37:02 by telufulu         ###   ########.fr       */
+/*   Updated: 2024/04/25 19:39:09 by telufulu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,16 @@ int	check_dead(t_config *config)
 	return (i);
 }
 
+void 	wait_philos(t_philo *philo, int n)
+{
+	while (--n)
+	{
+		pthread_create(&philo->philo, NULL, philo_routine, philo);
+		pthread_join(philo->philo, NULL);
+		philo = philo->next;
+	}
+}
+
 int	main(int argc, char **argv)
 {
 	t_config	*config;
@@ -39,8 +49,11 @@ int	main(int argc, char **argv)
 		philos = create_philos(config);
 		if (!philos)
 			ft_error("Creation of threads failed\n");
-		while (!check)
-			check = check_dead(config);
+		wait_philos(philos, config->num_philos);
+		//while (1)
+		//	check = 1;
+		//while (!check)
+		//	check = check_dead(config);	
 	}
 	else
 		ft_error("wrong number of arguments. Expected 5 or 6\n");
