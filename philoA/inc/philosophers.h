@@ -6,7 +6,7 @@
 /*   By: telufulu <telufulu@student.42madrid>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/18 17:45:25 by telufulu          #+#    #+#             */
-/*   Updated: 2024/04/26 17:29:53 by telufulu         ###   ########.fr       */
+/*   Updated: 2024/04/25 23:32:19 by telufulu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,13 +55,21 @@ typedef struct s_philo
 }				t_philo;
 
 // main.c
+int			check_dead(t_config *config, long int time_alive);
 
 // routines.c
+void		*philo_routine(void *arg);
 
 // set_philos.c
+int			init_philo(t_philo *prev, t_philo *res, int num, t_config *config);
+int			free_list(t_philo *res);
+int			add_philo(t_philo *res, int i, t_config *config);
+t_philo 	*create_philos(t_config *config);
 
 // utils.c
-int			check_args(char **argv);
+t_config	*get_config(char **argv);
+long int	get_time(void);
+//void		print_msg(t_philo *philos);
 
 // libft_utils.c
 int			ft_isspace(int c);
