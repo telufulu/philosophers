@@ -6,7 +6,7 @@
 /*   By: telufulu <telufulu@student.42madrid>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/18 17:45:25 by telufulu          #+#    #+#             */
-/*   Updated: 2024/04/25 19:39:04 by telufulu         ###   ########.fr       */
+/*   Updated: 2024/04/25 23:32:19 by telufulu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ typedef struct s_philo
 }				t_philo;
 
 // main.c
-int			check_dead(t_config *config);
+int			check_dead(t_config *config, long int time_alive);
 
 // routines.c
 void		*philo_routine(void *arg);

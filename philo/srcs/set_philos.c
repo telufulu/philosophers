@@ -6,7 +6,7 @@
 /*   By: telufulu <telufulu@student.42madrid>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/11 15:50:33 by telufulu          #+#    #+#             */
-/*   Updated: 2024/04/25 19:39:06 by telufulu         ###   ########.fr       */
+/*   Updated: 2024/04/25 22:39:25 by telufulu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,8 +20,6 @@ int	init_philo(t_philo *prev, t_philo *res, int num, t_config *config)
 	res->num = num;
 	res->config = config;
 	if (pthread_mutex_init(&res->fork, NULL))
-		return (1);
-	if (pthread_create(&res->philo, NULL, philo_routine, res))
 		return (1);
 	return (0);
 }

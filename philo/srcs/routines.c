@@ -6,7 +6,7 @@
 /*   By: telufulu <telufulu@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/11 20:43:12 by telufulu          #+#    #+#             */
-/*   Updated: 2024/04/25 19:21:03 by telufulu         ###   ########.fr       */
+/*   Updated: 2024/04/25 23:59:55 by telufulu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,57 +14,63 @@
 
 int	print_state(t_philo *philo, int flag)
 {
-	pthread_mutex_lock(&(philo->config)->stop);
-	if (flag == DEAD || get_time() - philo->tm_alive > philo->config->time_die)
+	long int	time;
+
+	time = get_time() - philo->config->start_time;
+	if (flag == DEAD || check_dead(philo->config, philo->tm_alive))
 	{
-		++philo->config->dead_flag;
-		pthread_mutex_unlock(&(philo->config)->stop);
-		printf("philo %i is dead\n", philo->num);
+		printf("%lims\tphilo %i is dead\n", time, philo->num);
 		return (DEAD);
 	}
-	else if (flag == FORK)
-		printf("philo %i has taken a fork\n", philo->num);
+	pthread_mutex_lock(&(philo->config)->stop);
+	if (flag == FORK)
+		printf("%lims\tphilo %i has taken a fork\n", time, philo->num);
 	else if (flag == EAT)
-		printf("philo %i is eating\n", philo->num);
+		printf("%lims\tphilo %i is eating\n", time, philo->num);
 	else if (flag == SLEEP)
-		printf("philo %i is sleeping\n", philo->num);
+		printf("%lims\tphilo %i is sleeping\n", time, philo->num);
 	else if (flag == THINK)
-		printf("philo %i is thinking\n", philo->num);
+		printf("%lims\tphilo %i is thinking\n", time, philo->num);
 	pthread_mutex_unlock(&(philo->config)->stop);
 	return (0);
 }
 
-int	take_forks(t_philo *philo, int flag)
+int	take_forks(t_philo *philo, int philo_num)
 {
-	if (flag % 2)
+	if (philo_num % 2)
 	{
-		//printf("PAR");
 		pthread_mutex_lock(&philo->fork);
-		//if (print_state(philo, FORK))
-		//	return (1);
-		//pthread_mutex_lock(&(philo->prev)->fork);
-		printf("%d -> %p\n", philo->num, philo->prev);
-		//if (print_state(philo, FORK))
-		//	return (1);
+		if (print_state(philo, FORK) == DEAD)
+			return (1);
+		pthread_mutex_lock(&(philo->prev)->fork);
+		if (print_state(philo, FORK) == DEAD)
+			return (1);
 	}
 	else
 	{
 		pthread_mutex_lock(&(philo->prev)->fork);
-		//if (print_state(philo, FORK))
-		//	return (1);
+		if (print_state(philo, FORK) == DEAD)
+			return (1);
 		pthread_mutex_lock(&philo->fork);
-		//if (print_state(philo, FORK))
-		//	return (1);
+		if (print_state(philo, FORK) == DEAD)
+			return (1);
 	}
-	sleep(1);
-	pthread_mutex_unlock(&philo->fork);
-	pthread_mutex_unlock(&philo->prev->fork);
+	//pthread_mutex_unlock(&philo->fork);
+	//pthread_mutex_unlock(&philo->prev->fork);
 	return (0);
 }
 
-//int		philo_eat(t_philo *philo)
-//{
-//}
+int		philo_eat(t_philo *philo, t_config *config)
+{
+	print_state(philo, EAT);
+	while (get_time() - philo->tm_alive < config->time_eat)
+	{
+		if (check_dead(config, philo->tm_alive))
+			return (print_state(philo, DEAD));
+		usleep(42);
+	}
+	return (0);
+}
 
 void	*philo_routine(void *arg)
 {
@@ -72,20 +78,10 @@ void	*philo_routine(void *arg)
 
 	philo = (t_philo *)arg;
 	philo->tm_alive = get_time();
-	//while (!check_dead(philo->config))
-	while (1)
+	while (!check_dead(philo->config, philo->tm_alive))
 	{
-		if (take_forks(philo, philo->num) == DEAD)
+		if (take_forks(philo, philo->num))
 			return (NULL);
-			//print_state(philo, DEAD);
-		else
-		{
-			//philo->tm_alive = get_time();
-			//if (philo_eat(philo) == DEAD)
-			//return (NULL);
-			//	++philo->config->dead_flag;
-		}
 	}
-	printf("Sale\n");
 	return (NULL);
 } 
