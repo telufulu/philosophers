@@ -6,26 +6,66 @@
 /*   By: telufulu <telufulu@student.42madrid>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/09 16:12:36 by telufulu          #+#    #+#             */
-/*   Updated: 2024/04/26 17:29:51 by telufulu         ###   ########.fr       */
+/*   Updated: 2024/04/27 18:57:25 by telufulu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
 
-int	check_args(char **argv)
+long int	get_time(void)
 {
-	int	i;
+	struct timeval	start;
 
-	i = 0;
-	while (argv)
+	gettimeofday(&start, NULL);
+	return ((long int)start.tv_sec * 1000);
+}
+
+int	get_config(t_config *config, char **argv)
+{
+	config->dead_flag = 0;
+	config->num_eats = 0;
+	config->num_philos = ft_atolui(argv[0]);
+	config->time_die = ft_atolui(argv[1]);
+	config->time_eat = ft_atolui(argv[2]);
+	config->time_sleep = ft_atolui(argv[3]);
+	config->start_time = get_time();
+	if (argv[4])
+		config->num_loops = ft_atolui(argv[4]);
+	else
+		config->num_loops = -1;
+	if (pthread_mutex_init(&config->stop, NULL) || !config->num_philos ||\
+		!config->time_die || !config->time_eat || !config->time_sleep ||\
+		(argv[4] && !config->num_loops))
+		return (-1);
+	return (0);
+}
+
+int	check_flags(t_config *config)
+{
+	pthread_mutex_lock(&config->stop);
+	if (config->dead_flag || config->num_eats == config->num_philos)
 	{
-		while (**argv >= '0' && *argv <= '9')
-		{
-			if (**argv < '0' || *argv > '9')
-				return (-1);
-			++(*argv);
-		}
-		++argv;
+		pthread_mutex_unlock(&config->stop);
+		return (1);
 	}
+	pthread_mutex_unlock(&config->stop);
+	return (0);
+}
+
+int	print_msg(int philo, int flag, t_config *config)
+{
+	int	time;
+
+	pthread_mutex_lock(&config->stop);
+	time = get_time() - config->start_time;
+	if (flag == DEAD)
+	{
+		++config->dead_flag;
+		printf("%ims\tPhilo %i is dead", time, philo);
+		return (1);
+	}
+	if (flag == FORK)
+		printf("%ims\tPhilo %i has taken a fork", time, philo);
+	pthread_mutex_unlock(&config->stop);
 	return (0);
 }

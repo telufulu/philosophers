@@ -6,36 +6,30 @@
 /*   By: telufulu <telufulu@student.42madrid>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/04 17:41:30 by telufulu          #+#    #+#             */
-/*   Updated: 2024/04/18 20:21:47 by telufulu         ###   ########.fr       */
+/*   Updated: 2024/04/26 23:34:00 by telufulu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
 
-long int	ft_atoli(const char *str)
+long int	ft_atolui(const char *str)
 {
 	long int	res;
-	long int	neg;
 
-	neg = 1;
 	res = 0;
 	while (*str == ' ' || (*str >= 9 && *str <= 13))
 		str++;
-	if (*str == '-' || *str == '+')
-	{
-		if (*str == '-')
-			neg = -1;
-		str++;
-	}
 	while (*str == '0')
 		str++;
+	if (*str < '0' || *str > '9')
+		return (res);
 	while (*str != '\0' && *str >= '0' && *str <= '9')
 	{
 		res *= 10;
 		res += (*str - '0');
 		str++;
 	}
-	return (res * neg);
+	return (res);
 }
 
 void	*ft_calloc(size_t count, size_t size)
