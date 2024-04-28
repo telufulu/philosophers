@@ -6,7 +6,7 @@
 /*   By: telufulu <telufulu@student.42madrid>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/18 17:45:25 by telufulu          #+#    #+#             */
-/*   Updated: 2024/04/27 19:00:06 by telufulu         ###   ########.fr       */
+/*   Updated: 2024/04/27 21:40:02 by telufulu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@
 # include <stdlib.h>
 # include <stdio.h>
 # include <sys/time.h>
+# include <errno.h>
 
 // Philo flags
 # define NO_CHANGE 	0
@@ -59,10 +60,18 @@ typedef struct s_philo
 // main.c
 
 // routines.c
-int			start_routines(t_philo *philos, t_config *config);
+int			take_forks(t_philo *philo);
+int			drop_forks(t_philo *philo);
+int			philo_eat(t_philo *philo, int loop);
+int			philo_sleep(t_philo *philo);
+
+// routines_utils.c
+void		add_eat(t_philo *philo);
+int			check_dead(t_philo *philo);
 
 // set_philos.c
 t_philo		*set_philos(t_config *config, int start_philo);
+int			start_routines(t_philo *philos, t_config *config);
 
 // utils.c
 long int	get_time(void);

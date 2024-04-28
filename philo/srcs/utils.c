@@ -6,7 +6,7 @@
 /*   By: telufulu <telufulu@student.42madrid>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/09 16:12:36 by telufulu          #+#    #+#             */
-/*   Updated: 2024/04/27 18:57:25 by telufulu         ###   ########.fr       */
+/*   Updated: 2024/04/27 21:54:44 by telufulu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,14 +27,16 @@ int	get_config(t_config *config, char **argv)
 	config->num_philos = ft_atolui(argv[0]);
 	config->time_die = ft_atolui(argv[1]);
 	config->time_eat = ft_atolui(argv[2]);
-	config->time_sleep = ft_atolui(argv[3]);
+	config->time_sleep = ft_atolui(argv[3]) + config->time_eat;
 	config->start_time = get_time();
 	if (argv[4])
 		config->num_loops = ft_atolui(argv[4]);
 	else
 		config->num_loops = -1;
-	if (pthread_mutex_init(&config->stop, NULL) || !config->num_philos ||\
-		!config->time_die || !config->time_eat || !config->time_sleep ||\
+	if (pthread_mutex_init(&config->stop, NULL))
+		return (-1);
+	if (!config->num_philos || !config->time_die ||\
+		!config->time_eat || !config->time_sleep ||\
 		(argv[4] && !config->num_loops))
 		return (-1);
 	return (0);
@@ -61,11 +63,17 @@ int	print_msg(int philo, int flag, t_config *config)
 	if (flag == DEAD)
 	{
 		++config->dead_flag;
-		printf("%ims\tPhilo %i is dead", time, philo);
+		printf("%ims\tPhilo %i is dead\n", time, philo);
 		return (1);
 	}
-	if (flag == FORK)
-		printf("%ims\tPhilo %i has taken a fork", time, philo);
+	else if (flag == FORK)
+		printf("%ims\tPhilo %i has taken a fork\n", time, philo);
+	else if (flag == EAT)
+		printf("%ims\tPhilo %i is eating\n", time, philo);
+	else if (flag == SLEEP)
+		printf("%ims\tPhilo %i is sleeping\n", time, philo);
+	else if (flag == THINK)
+		printf("%ims\tPhilo %i is thinking\n", time, philo);
 	pthread_mutex_unlock(&config->stop);
 	return (0);
 }
