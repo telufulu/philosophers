@@ -6,7 +6,7 @@
 /*   By: telufulu <telufulu@student.42madrid>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/09 16:12:36 by telufulu          #+#    #+#             */
-/*   Updated: 2024/04/27 21:54:44 by telufulu         ###   ########.fr       */
+/*   Updated: 2024/04/28 19:47:23 by telufulu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ long int	get_time(void)
 	struct timeval	start;
 
 	gettimeofday(&start, NULL);
-	return ((long int)start.tv_sec * 1000);
+	return ((long int)start.tv_sec * 1000 + start.tv_usec / 1000);
 }
 
 int	get_config(t_config *config, char **argv)
@@ -45,7 +45,7 @@ int	get_config(t_config *config, char **argv)
 int	check_flags(t_config *config)
 {
 	pthread_mutex_lock(&config->stop);
-	if (config->dead_flag || config->num_eats == config->num_philos)
+	if (config->dead_flag > 0|| config->num_eats == config->num_philos)
 	{
 		pthread_mutex_unlock(&config->stop);
 		return (1);
@@ -60,20 +60,24 @@ int	print_msg(int philo, int flag, t_config *config)
 
 	pthread_mutex_lock(&config->stop);
 	time = get_time() - config->start_time;
-	if (flag == DEAD)
+	if (!config->dead_flag)
 	{
-		++config->dead_flag;
-		printf("%ims\tPhilo %i is dead\n", time, philo);
-		return (1);
+		if (flag == DEAD)
+		{
+			++config->dead_flag;
+			printf("%ims\tPhilo %i is dead\n", time, philo);
+			pthread_mutex_unlock(&config->stop);
+			return (1);
+		}
+		else if (flag == FORK)
+			printf("%ims\tPhilo %i has taken a fork\n", time, philo);
+		else if (flag == EAT)
+			printf("%ims\tPhilo %i is eating\n", time, philo);
+		else if (flag == SLEEP)
+			printf("%ims\tPhilo %i is sleeping\n", time, philo);
+		else if (flag == THINK)
+			printf("%ims\tPhilo %i is thinking\n", time, philo);
 	}
-	else if (flag == FORK)
-		printf("%ims\tPhilo %i has taken a fork\n", time, philo);
-	else if (flag == EAT)
-		printf("%ims\tPhilo %i is eating\n", time, philo);
-	else if (flag == SLEEP)
-		printf("%ims\tPhilo %i is sleeping\n", time, philo);
-	else if (flag == THINK)
-		printf("%ims\tPhilo %i is thinking\n", time, philo);
 	pthread_mutex_unlock(&config->stop);
 	return (0);
 }

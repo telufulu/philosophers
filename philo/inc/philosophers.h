@@ -6,7 +6,7 @@
 /*   By: telufulu <telufulu@student.42madrid>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/18 17:45:25 by telufulu          #+#    #+#             */
-/*   Updated: 2024/04/27 21:40:02 by telufulu         ###   ########.fr       */
+/*   Updated: 2024/04/28 16:04:20 by telufulu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,7 @@ typedef struct s_philo
 {
 	struct s_philo	*prev;
 	pthread_t		philo;
+	char			fork_flag;
 	pthread_mutex_t	fork;
 	int				num;
 	long int		tm_alive;
@@ -62,16 +63,19 @@ typedef struct s_philo
 // routines.c
 int			take_forks(t_philo *philo);
 int			drop_forks(t_philo *philo);
-int			philo_eat(t_philo *philo, int loop);
+int			philo_eat(t_philo *philo, int *loop);
 int			philo_sleep(t_philo *philo);
 
 // routines_utils.c
 void		add_eat(t_philo *philo);
 int			check_dead(t_philo *philo);
+int			lock_fork(t_philo *philo);
+void		unlock_fork(t_philo *philo);
 
 // set_philos.c
 t_philo		*set_philos(t_config *config, int start_philo);
 int			start_routines(t_philo *philos, t_config *config);
+int			wait_philos(t_philo *philos, t_config *config);
 
 // utils.c
 long int	get_time(void);
