@@ -3,91 +3,74 @@
 /*                                                        :::      ::::::::   */
 /*   philosophers.h                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: telufulu <telufulu@student.42madrid>       +#+  +:+       +#+        */
+/*   By: telufulu <telufulu@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/03/18 17:45:25 by telufulu          #+#    #+#             */
-/*   Updated: 2024/04/28 16:04:20 by telufulu         ###   ########.fr       */
+/*   Created: 2024/04/28 21:54:29 by telufulu          #+#    #+#             */
+/*   Updated: 2024/04/29 01:57:00 by telufulu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef PHILOSOPHERS_H
 # define PHILOSOPHERS_H
 
-/*
- * BORRAR ANTES DE ENTREGAR 
- */
-/**************************/
-
+/*******************************************************************************
+ * Includes
+ ******************************************************************************/
 # include <pthread.h>
 # include <unistd.h>
 # include <stdlib.h>
 # include <stdio.h>
 # include <sys/time.h>
 # include <errno.h>
+# include <stdbool.h>
 
-// Philo flags
-# define NO_CHANGE 	0
-# define FORK 		1
-# define EAT 		2
-# define SLEEP 		4
-# define THINK		8
-# define DEAD		16
+/*******************************************************************************
+ * Structs
+ ******************************************************************************/
 
-typedef struct s_config
+typedef struct s_mutex_value
 {
-	char			dead_flag;
-	long int		num_eats;
-	int				num_philos;
-	long int		time_die;
-	long int		time_eat;
-	long int		time_sleep;
-	long int		start_time;	
-	long int		num_loops;	
-	pthread_mutex_t	stop;
-}				t_config;
+	bool			value;
+	pthread_mutex_t	mutex;
+}				t_mutex_value;
 
 typedef struct s_philo
 {
-	struct s_philo	*prev;
 	pthread_t		philo;
-	char			fork_flag;
-	pthread_mutex_t	fork;
+	t_mutex_value	*fork_left;
+	t_mutex_value	*fork_right;
+	t_mutex_value	*dead_flag;
+	size_t			num_philos;
+	uint64_t		time_die;
+	uint64_t		time_eat;
+	uint64_t		time_sleep;
+	uint64_t		time_alive;
+	ssize_t			num_loops;
 	int				num;
-	long int		tm_alive;
-	t_config		*config;
-	struct s_philo	*next;
 }				t_philo;
 
-// main.c
+/*******************************************************************************
+ * Functions
+ ******************************************************************************/
+
+//utils.c
+bool			change_value(t_mutex_value *mutex, bool new_value);
+t_mutex_value	*new_mutex(void);
+t_philo			new_philo(t_mutex_value *dead_flag, size_t *args, int num);
+int				init_threads(t_philo *philo, int num_threads);
+int				get_args(char **argv, size_t *args);
+t_philo			*init_philos(t_mutex_value *dead_flag, size_t *args);
+bool			wait_philos(t_philo *philos);
+uint64_t		now(void);
+void			time_sleep(uint64_t msecs);
 
 // routines.c
-int			take_forks(t_philo *philo);
-int			drop_forks(t_philo *philo);
-int			philo_eat(t_philo *philo, int *loop);
-int			philo_sleep(t_philo *philo);
-
-// routines_utils.c
-void		add_eat(t_philo *philo);
-int			check_dead(t_philo *philo);
-int			lock_fork(t_philo *philo);
-void		unlock_fork(t_philo *philo);
-
-// set_philos.c
-t_philo		*set_philos(t_config *config, int start_philo);
-int			start_routines(t_philo *philos, t_config *config);
-int			wait_philos(t_philo *philos, t_config *config);
-
-// utils.c
-long int	get_time(void);
-int			get_config(t_config *config, char **argv);
-int			check_flags(t_config *config);
-int			print_msg(int philo, int flag, t_config *config);
+void			*philo_routine(void *arg);
 
 // libft_utils.c
-int			ft_isspace(int c);
-long int	ft_atolui(const char *str);
-int			ft_error(char *err);
-size_t		ft_strlen(const char *s);
-void		*ft_calloc(size_t count, size_t size);
+long int		ft_atolui(const char *str);
+void			*ft_calloc(size_t count, size_t size);
+size_t			ft_strlen(const char *s);
+int				ft_error(char *err);
 
 #endif

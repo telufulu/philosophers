@@ -6,7 +6,7 @@
 /*   By: telufulu <telufulu@student.42madrid>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/11 15:50:33 by telufulu          #+#    #+#             */
-/*   Updated: 2024/04/28 17:03:26 by telufulu         ###   ########.fr       */
+/*   Updated: 2024/04/28 21:23:05 by telufulu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,10 +57,7 @@ static void	*philo_routine(void *arg)
 	philo->tm_alive = get_time();
 	while (!check_flags(philo->config))
 	{
-		int	i = take_forks(philo);
-
-		printf("philo %i i: %i\n", philo->num, i);
-		if (i)
+		if (take_forks(philo))
 			return (NULL);
 		if (philo_eat(philo, &loop))
 			return (NULL);
@@ -97,5 +94,6 @@ int	wait_philos(t_philo *philos, t_config *config)
 			return (-1);
 		philos = philos->next;
 	}
+	printf("PHILO %i FINISH", philos->num);
 	return (0);
 }

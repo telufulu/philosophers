@@ -6,7 +6,8 @@ INC			=	inc/
 SRCS		=	$(addprefix $(SRCS_DIR), $(SRCS_FILES))
 OBJS		=	$(addprefix $(OBJS_DIR), $(OBJS_FILES))
 OBJS_FILES	=	$(SRCS_FILES:%.c=%.o)
-SRCS_FILES	=	philosophers.c utils.c libft_utils.c routines.c
+SRCS_FILES	=	philosophers.c utils.c libft_utils.c set_philos.c routines.c \
+				routines_utils.c
 SRCS_DIR	=	srcs/
 OBJS_DIR	=	objs/
 
