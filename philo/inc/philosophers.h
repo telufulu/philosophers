@@ -6,7 +6,7 @@
 /*   By: telufulu <telufulu@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/28 21:54:29 by telufulu          #+#    #+#             */
-/*   Updated: 2024/04/29 16:27:07 by telufulu         ###   ########.fr       */
+/*   Updated: 2024/04/30 18:24:29 by telufulu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@
 # include <sys/time.h>
 # include <errno.h>
 # include <stdbool.h>
+# include <stdint.h>
 
 /*******************************************************************************
  * Structs

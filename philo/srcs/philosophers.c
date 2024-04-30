@@ -6,7 +6,7 @@
 /*   By: telufulu <telufulu@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/28 21:53:57 by telufulu          #+#    #+#             */
-/*   Updated: 2024/04/29 16:45:55 by telufulu         ###   ########.fr       */
+/*   Updated: 2024/04/30 18:50:44 by telufulu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,8 @@ int	main(int argc, char **argv)
 		if (!check)
 			return (ft_error("pthread.h failed"));
 		*/
+		pthread_mutex_destroy(&dead_flag->mutex);
+		free_all(philos);
 	}
 	else
 		return (ft_error("wrong number of arguments"));

@@ -6,7 +6,7 @@
 /*   By: telufulu <telufulu@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/29 00:56:03 by telufulu          #+#    #+#             */
-/*   Updated: 2024/04/29 17:31:14 by telufulu         ###   ########.fr       */
+/*   Updated: 2024/04/30 18:42:36 by telufulu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,11 @@ bool	take_forks(t_philo *philo)
 	}
 	print_msg(philo->dead_flag, "take left fork", philo);
 	while (!change_value(philo->fork_right, true))
+	{
 		time_sleep(100);
+		if (check_dead(philo))
+			return (false);
+	}
 	print_msg(philo->dead_flag, "take right fork", philo);
 	return (true);
 }
@@ -58,7 +62,6 @@ void	*philo_routine(void *arg)
 		//if (!take_forks(philo))
 		//	return ((void *)change_value(philo->dead_flag, true));
 		//	return (NULL);
-		time_sleep(500);
 	}
 	return (NULL);
 }
