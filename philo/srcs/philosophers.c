@@ -6,7 +6,7 @@
 /*   By: telufulu <telufulu@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/28 21:53:57 by telufulu          #+#    #+#             */
-/*   Updated: 2024/04/29 01:36:07 by telufulu         ###   ########.fr       */
+/*   Updated: 2024/04/29 16:45:55 by telufulu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,10 @@ int	main(int argc, char **argv)
 			return (ft_error("failed making philos"));
 		if (wait_philos(philos))
 			return (0);
+		/*int check = wait_philos(philos);
+		if (!check)
+			return (ft_error("pthread.h failed"));
+		*/
 	}
 	else
 		return (ft_error("wrong number of arguments"));

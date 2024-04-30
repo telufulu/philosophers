@@ -6,7 +6,7 @@
 /*   By: telufulu <telufulu@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/28 22:09:19 by telufulu          #+#    #+#             */
-/*   Updated: 2024/04/29 01:54:22 by telufulu         ###   ########.fr       */
+/*   Updated: 2024/04/29 17:18:15 by telufulu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,6 +58,7 @@ t_philo	new_philo(t_mutex_value *dead_flag, size_t *args, int num)
 	if (!philo.num_loops)
 		philo.num_loops = -1;
 	philo.num = num;
+	philo.start_time = now();
 	return (philo);
 }
 
@@ -123,14 +124,13 @@ bool wait_philos(t_philo *philos)
 	size_t i;
 
 	i = 0;
-	while (i < philos->num_philos - 1)
+	while (i < philos->num_philos)
 	{
 		if (pthread_join(philos[i].philo, NULL))
 			return (false);
 		++i;
-		return (change_value(philos[i].dead_flag, true));
 	}
-	return (false);
+	return (true);
 }
 
 // Returns time since January 1 1970 in miliseconds
@@ -150,4 +150,26 @@ void	time_sleep(uint64_t msecs)
 	diff = now() + msecs;
 	while (diff > now())
 		usleep(200);
+}
+
+// Checks if the philo is dead. If it's dead, changes the dead_flag and returns true
+bool	check_dead(t_philo *philo)
+{
+	if (philo->dead_flag->value)
+		return (true);
+	if (philo->time_alive >= philo->time_die)
+	{
+		change_value(philo->dead_flag, true);
+		print_msg(philo->dead_flag, "is dead", philo);
+		return (true);
+	}
+	return (false);
+}
+
+// Prints state messages from philos in a protective way
+void	print_msg(t_mutex_value *stop, char *msg, t_philo *philo)
+{
+	pthread_mutex_lock(&stop->mutex);
+	printf("%llums philo %i %s\n", now() - philo->start_time, philo->num, msg);
+	pthread_mutex_unlock(&stop->mutex);
 }

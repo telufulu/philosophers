@@ -6,7 +6,7 @@
 /*   By: telufulu <telufulu@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/28 21:54:29 by telufulu          #+#    #+#             */
-/*   Updated: 2024/04/29 01:57:00 by telufulu         ###   ########.fr       */
+/*   Updated: 2024/04/29 16:27:07 by telufulu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,7 @@ typedef struct s_philo
 	uint64_t		time_alive;
 	ssize_t			num_loops;
 	int				num;
+	uint64_t		start_time;
 }				t_philo;
 
 /*******************************************************************************
@@ -63,6 +64,8 @@ t_philo			*init_philos(t_mutex_value *dead_flag, size_t *args);
 bool			wait_philos(t_philo *philos);
 uint64_t		now(void);
 void			time_sleep(uint64_t msecs);
+bool			check_dead(t_philo *philo);
+void			print_msg(t_mutex_value *stop, char *msg, t_philo *philo);
 
 // routines.c
 void			*philo_routine(void *arg);
