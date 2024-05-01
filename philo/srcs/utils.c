@@ -6,7 +6,7 @@
 /*   By: telufulu <telufulu@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/28 22:09:19 by telufulu          #+#    #+#             */
-/*   Updated: 2024/04/30 18:50:06 by telufulu         ###   ########.fr       */
+/*   Updated: 2024/05/01 21:45:30 by telufulu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,47 +38,61 @@ t_mutex_value	*new_mutex(void)
 		return (NULL);
 	res->value = false;
 	if (pthread_mutex_init(&res->mutex, NULL))
+	{
+		free(res);
+		res = NULL;	
 		return (NULL);
+	}
 	return (res);
 }
 
 // Create a new philosopher, and initialize everythin but the philo thread. 
 //If some error happens, it returns NULL.
-t_philo	new_philo(t_mutex_value *dead_flag, size_t *args, int num)
+t_philo	*new_philo(t_mutex_value *dead_flag, size_t *args, int num)
 {
-	t_philo	philo;
+	t_philo	*philo;
 
-	philo.fork_left = (t_mutex_value *)new_mutex();
-	philo.dead_flag = dead_flag;
-	philo.num_philos = args[0];
-	philo.time_die = args[1];
-	philo.time_eat = args[2];
-	philo.time_sleep = args[3];
-	philo.num_loops = args[4];
-	if (!philo.num_loops)
-		philo.num_loops = -1;
-	philo.num = num;
-	philo.start_time = now();
+	philo = ft_calloc(sizeof(t_philo), 1);
+	if (!philo)
+		return (NULL);
+	philo->fork_left = (t_mutex_value *)new_mutex();
+	if (!philo->fork_left)
+	{
+		free(philo);
+		philo = NULL;
+		return (NULL);
+	}
+	philo->dead_flag = dead_flag;
+	philo->num_philos = args[0];
+	philo->time_die = args[1];
+	philo->time_eat = args[2];
+	philo->time_sleep = args[3];
+	philo->num_loops = args[4];
+	if (!philo->num_loops)
+		philo->num_loops = -1;
+	philo->num = num;
+	philo->start_time = now();
 	return (philo);
 }
 
 // Initializes the threads from the philosophers and assing right forks.
 //If something failes, returns 1, otherwise, returns 0.
-int	init_threads(t_philo *philo, int num_threads)
+int	init_threads(t_philo **philo, int num_threads)
 {
 	int	i;
 
 	i = 0;
 	while (i < num_threads)
 	{
+		printf("philo num %i\n", philo[i]->num);
 		if (i + 1 == num_threads)
 		{
-			philo[i].fork_right = philo[i].fork_left;
-			philo[i].fork_left = philo[0].fork_left;
+			philo[i]->fork_right = philo[i]->fork_left;
+			philo[i]->fork_left = philo[0]->fork_left;
 		}
 		else
-			philo[i].fork_right = philo[i + 1].fork_left;
-		if (pthread_create(&philo[i].philo, NULL, philo_routine, philo + i))
+			philo[i]->fork_right = philo[i + 1]->fork_left;
+		if (pthread_create(&philo[i]->philo, NULL, philo_routine, philo[i]))
 			return (1);
 		++i;
 	}
@@ -101,32 +115,34 @@ int	get_args(char **argv, size_t *args)
 }
 
 // Returns an array of philos. If some error happens, ir returns NULL
-t_philo	*init_philos(t_mutex_value *dead_flag, size_t *args)
+t_philo	**init_philos(t_mutex_value *dead_flag, size_t *args)
 {
 	size_t	num;
-	t_philo *res;
+	t_philo **res;
 
 	num = 0;
-	res = ft_calloc(sizeof(t_philo), args[0]);
+	res = ft_calloc(sizeof(t_philo *), args[0] + 1);
 	if (!res)
 		return (NULL);
 	while (num < args[0])
 	{
 		res[num] = new_philo(dead_flag, args, num + 1);
+		if (!res[num])
+			return (NULL);
 		++num;
 	}
 	return (res);
 }
 
 // FALTA DESCRIPCIÓN
-bool wait_philos(t_philo *philos)
+bool wait_philos(t_philo **philos)
 {
 	size_t i;
 
 	i = 0;
-	while (i < philos->num_philos)
+	while (i < philos[i]->num_philos)
 	{
-		if (pthread_join(philos[i].philo, NULL))
+		if (pthread_join(philos[i]->philo, NULL))
 			return (false);
 		++i;
 	}
@@ -174,18 +190,33 @@ void	print_msg(t_mutex_value *stop, char *msg, t_philo *philo)
 	pthread_mutex_unlock(&stop->mutex);
 }
 
-void	free_all(t_mutex_value *dead, t_philos *philos)
+// Frees a mutex_value structure
+void	free_mutex(t_mutex_value *mutex)
 {
-	int	i;
-
-	i = philos->num_philos;
-	pthread_mutex_destroy(&dead->mutex);
-	free(dead);
-	dead = NULL;
-	while (--i)
+	if (mutex)
 	{
-		pthread_mutex_destroy(&dead->mutex);
-		free(dead);
-		++i;
+		pthread_mutex_destroy(&mutex->mutex);
+		free(mutex);
+		mutex = NULL;
 	}
+}
+
+// It detaches de threads and frees all the resources allocated with malloc.
+void	free_all(t_mutex_value *dead, t_philo **philos)
+{
+	t_philo	**aux;
+
+	aux = philos;
+	free_mutex(dead);
+	while (aux && *aux)
+	{
+		//pthread_detach((*aux)->philo);
+		free_mutex((*aux)->fork_left);
+		free_mutex((*aux)->fork_right);
+		free((*aux));
+		*aux = NULL;
+		++aux;
+	}
+	free(philos);
+	philos = NULL;
 }
