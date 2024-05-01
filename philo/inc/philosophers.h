@@ -6,7 +6,7 @@
 /*   By: telufulu <telufulu@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/28 21:54:29 by telufulu          #+#    #+#             */
-/*   Updated: 2024/05/01 20:26:32 by telufulu         ###   ########.fr       */
+/*   Updated: 2024/05/01 22:15:17 by telufulu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,6 +65,7 @@ t_philo			**init_philos(t_mutex_value *dead_flag, size_t *args);
 bool			wait_philos(t_philo **philos);
 uint64_t		now(void);
 void			time_sleep(uint64_t msecs);
+bool			is_dead(t_philo *philo);
 bool			check_dead(t_philo *philo);
 void			print_msg(t_mutex_value *stop, char *msg, t_philo *philo);
 void			free_mutex(t_mutex_value *mutex);

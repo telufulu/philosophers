@@ -6,7 +6,7 @@
 /*   By: telufulu <telufulu@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/28 22:09:19 by telufulu          #+#    #+#             */
-/*   Updated: 2024/05/01 22:05:56 by telufulu         ###   ########.fr       */
+/*   Updated: 2024/05/01 22:47:19 by telufulu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ t_mutex_value	*new_mutex(void)
 	if (pthread_mutex_init(&res->mutex, NULL))
 	{
 		free(res);
-		res = NULL;	
+		res = NULL;
 		return (NULL);
 	}
 	return (res);
@@ -117,7 +117,7 @@ int	get_args(char **argv, size_t *args)
 t_philo	**init_philos(t_mutex_value *dead_flag, size_t *args)
 {
 	size_t	num;
-	t_philo **res;
+	t_philo	**res;
 
 	num = 0;
 	res = ft_calloc(sizeof(t_philo *), args[0] + 1);
@@ -134,9 +134,9 @@ t_philo	**init_philos(t_mutex_value *dead_flag, size_t *args)
 }
 
 // FALTA DESCRIPCIÓN
-bool wait_philos(t_philo **philos)
+bool	wait_philos(t_philo **philos)
 {
-	size_t i;
+	size_t	i;
 
 	i = 0;
 	while (i < philos[i]->num_philos - 1)
@@ -145,6 +145,9 @@ bool wait_philos(t_philo **philos)
 			return (false);
 		++i;
 	}
+	i = 0;
+	while (i < philos[i]->num_philos - 1)
+		pthread_detach(philos[i++]->philo);
 	return (true);
 }
 
@@ -167,12 +170,25 @@ void	time_sleep(uint64_t msecs)
 		usleep(200);
 }
 
-// Checks if the philo is dead. If it's dead, changes the dead_flag and returns true
+bool	is_dead(t_philo *philo)
+{
+	pthread_mutex_lock(&philo->dead_flag->mutex);
+	if (philo->dead_flag->value)
+	{
+		pthread_mutex_unlock(&philo->dead_flag->mutex);
+		return (true);
+	}
+	pthread_mutex_unlock(&philo->dead_flag->mutex);
+	return (false);
+}
+
+// Checks if the philo is dead. If it's dead, 
+// changes the dead_flag and returns true
 bool	check_dead(t_philo *philo)
 {
 	if (philo->dead_flag->value)
 		return (true);
-	if (philo->time_alive >= philo->time_die)
+	if (now() - philo->time_alive >= philo->time_die)
 	{
 		change_value(philo->dead_flag, true);
 		print_msg(philo->dead_flag, "is dead", philo);
@@ -209,7 +225,6 @@ void	free_all(t_mutex_value *dead, t_philo **philos)
 	free_mutex(dead);
 	while (aux && *aux)
 	{
-		//pthread_detach((*aux)->philo);
 		free_mutex((*aux)->fork_left);
 		free_mutex((*aux)->fork_right);
 		free((*aux));
