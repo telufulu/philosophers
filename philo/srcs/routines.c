@@ -6,7 +6,7 @@
 /*   By: telufulu <telufulu@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/29 00:56:03 by telufulu          #+#    #+#             */
-/*   Updated: 2024/05/01 21:46:33 by telufulu         ###   ########.fr       */
+/*   Updated: 2024/05/01 21:59:42 by telufulu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,9 +59,6 @@ void	*philo_routine(void *arg)
 		//printf("Soy philo %i\n", philo->num);
 		if (!take_forks(philo))
 			return (NULL);
-		//if (!take_forks(philo))
-		//	return ((void *)change_value(philo->dead_flag, true));
-		//	return (NULL);
 	}
 	return (NULL);
 }

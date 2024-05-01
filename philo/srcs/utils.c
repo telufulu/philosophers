@@ -6,7 +6,7 @@
 /*   By: telufulu <telufulu@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/28 22:09:19 by telufulu          #+#    #+#             */
-/*   Updated: 2024/05/01 21:45:30 by telufulu         ###   ########.fr       */
+/*   Updated: 2024/05/01 22:05:56 by telufulu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,7 +84,6 @@ int	init_threads(t_philo **philo, int num_threads)
 	i = 0;
 	while (i < num_threads)
 	{
-		printf("philo num %i\n", philo[i]->num);
 		if (i + 1 == num_threads)
 		{
 			philo[i]->fork_right = philo[i]->fork_left;
@@ -140,7 +139,7 @@ bool wait_philos(t_philo **philos)
 	size_t i;
 
 	i = 0;
-	while (i < philos[i]->num_philos)
+	while (i < philos[i]->num_philos - 1)
 	{
 		if (pthread_join(philos[i]->philo, NULL))
 			return (false);

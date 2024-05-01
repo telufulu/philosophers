@@ -1,7 +1,7 @@
 NAME		=	philo
 CC			=	cc
 CFLAGS		=	-Wall -Werror -Wextra -I $(INC)
-SANITIZE	=	-fsanitize=address -g3
+SANITIZE	=	-fsanitize=
 INC			=	inc/
 
 SRCS		=	$(addprefix $(SRCS_DIR), $(SRCS_FILES))
@@ -29,8 +29,11 @@ WHITE		=	\033[0;97m
 
 all:	$(NAME)
 
-sanitize:	CFLAGS += $(SANITIZE)
-sanitize:	clean all
+sanitize_leaks:		CFLAGS += $(SANITIZE)address -g3
+sanitize_leaks:		clean all
+
+sanitize_threads:	CFLAGS += $(SANITIZE)address -g3
+sanitize_threads:	clean all
 
 $(NAME):	$(OBJS)
 	$(CC) $(CFLAGS) $(OBJS) -o $(NAME)
