@@ -6,7 +6,7 @@
 /*   By: telufulu <telufulu@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/28 22:09:19 by telufulu          #+#    #+#             */
-/*   Updated: 2024/05/03 18:00:31 by telufulu         ###   ########.fr       */
+/*   Updated: 2024/05/03 18:49:23 by telufulu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,9 +62,9 @@ void	free_all(t_mutex_value *dead, t_philo **philos)
 
 // Choose the minimum number between time_die, time_sleep, time_eat, and use it
 // for sleep threads. The result number is the (smaller / 100)ms
-uint64_t	set_delay(size_t *args)
+uint64_t	set_delay(ssize_t *args)
 {
-	size_t	res;
+	ssize_t	res;
 	int		i;
 
 	res = UINT_MAX;

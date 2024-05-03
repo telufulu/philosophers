@@ -6,7 +6,7 @@
 /*   By: telufulu <telufulu@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/28 22:09:19 by telufulu          #+#    #+#             */
-/*   Updated: 2024/05/03 17:59:51 by telufulu         ###   ########.fr       */
+/*   Updated: 2024/05/03 21:22:29 by telufulu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,8 @@
 // true, otherwise, returns false.
 bool	change_value(t_mutex_value *mutex, bool new_value)
 {
+	if (!mutex)
+		return (false);
 	pthread_mutex_lock(&mutex->mutex);
 	if (mutex->value != new_value)
 	{
@@ -27,25 +29,20 @@ bool	change_value(t_mutex_value *mutex, bool new_value)
 	return (false);
 }
 
-// FALTA DESCRIPCIÓN
-bool	wait_philos(t_philo **philos)
+bool	wait_philos(t_philo **philos, ssize_t num_philos)
 {
-	size_t	i;
+	ssize_t	i;
 
 	i = 0;
-	while (i < philos[i]->num_philos - 1)
+	while (i < num_philos)
 	{
 		if (pthread_join(philos[i]->philo, NULL))
 			return (false);
 		++i;
 	}
-	i = 0;
-	while (i < philos[i]->num_philos - 1)
-		pthread_detach(philos[i++]->philo);
 	return (true);
 }
 
-// FALTA DESCRIPCIÓN
 bool	one_is_dead(t_mutex_value *dead)
 {
 	pthread_mutex_lock(&dead->mutex);

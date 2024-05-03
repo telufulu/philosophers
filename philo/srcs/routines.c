@@ -6,7 +6,7 @@
 /*   By: telufulu <telufulu@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/29 00:56:03 by telufulu          #+#    #+#             */
-/*   Updated: 2024/05/03 17:49:53 by telufulu         ###   ########.fr       */
+/*   Updated: 2024/05/03 21:23:21 by telufulu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 
 bool	take_forks(t_philo *philo)
 {
+	check_dead(philo);
 	if (!change_value(philo->fork_left, true))
 	{
 		print_msg(philo->dead_flag, "\033[0;95mthinking", philo);
@@ -45,6 +46,9 @@ bool	drop_forks(t_philo *philo)
 bool	philo_eat(t_philo *philo)
 {
 	philo->time_alive = now();
+	--philo->my_loops;
+	if (!philo->my_loops)
+		--(*philo->num_loops);
 	print_msg(philo->dead_flag, "\033[0;92meating", philo);
 	if (now() - philo->time_alive + philo->time_eat > philo->time_die)
 	{
@@ -78,7 +82,7 @@ void	*philo_routine(void *arg)
 	philo->time_alive = now();
 	if (philo->num % 2)
 		time_sleep(philo->delay);
-	while (!one_is_dead(philo->dead_flag))
+	while (!one_is_dead(philo->dead_flag) && !no_loops(philo))
 	{
 		if (!take_forks(philo))
 			return (NULL);
@@ -88,7 +92,6 @@ void	*philo_routine(void *arg)
 			return (NULL);
 		if (!philo_sleep(philo) || one_is_dead(philo->dead_flag))
 			return (NULL);
-		check_dead(philo);
 	}
 	return (NULL);
 }

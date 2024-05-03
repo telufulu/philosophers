@@ -8,7 +8,7 @@ SRCS		=	$(addprefix $(SRCS_DIR), $(SRCS_FILES))
 OBJS		=	$(addprefix $(OBJS_DIR), $(OBJS_FILES))
 OBJS_FILES	=	$(SRCS_FILES:%.c=%.o)
 SRCS_FILES	=	philosophers.c utils_init.c libft_utils.c routines.c \
-				utils_threads.c utils.c
+				utils_threads.c utils_args.c utils.c
 SRCS_DIR	=	srcs/
 OBJS_DIR	=	objs/
 
@@ -33,7 +33,7 @@ all:	$(NAME)
 sanitize_leaks:		CFLAGS += $(SANITIZE)address -g3
 sanitize_leaks:		clean all
 
-sanitize_threads:	CFLAGS += $(SANITIZE)address -g3
+sanitize_threads:	CFLAGS += $(SANITIZE)thread -pthread
 sanitize_threads:	clean all
 
 $(NAME):	$(OBJS)
