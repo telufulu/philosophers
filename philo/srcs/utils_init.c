@@ -6,7 +6,7 @@
 /*   By: telufulu <telufulu@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/28 22:09:19 by telufulu          #+#    #+#             */
-/*   Updated: 2024/05/02 20:01:10 by telufulu         ###   ########.fr       */
+/*   Updated: 2024/05/03 18:00:15 by telufulu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,7 @@ t_philo	*new_philo(t_mutex_value *dead_flag, size_t *args, int num)
 	philo->time_die = args[1];
 	philo->time_eat = args[2];
 	philo->time_sleep = args[3];
+	philo->delay = set_delay(args);
 	philo->num_loops = args[4];
 	if (!philo->num_loops)
 		philo->num_loops = -1;
@@ -70,10 +71,7 @@ int	init_threads(t_philo **philo, int num_threads)
 	while (i < num_threads)
 	{
 		if (i + 1 == num_threads)
-		{
-			philo[i]->fork_right = philo[i]->fork_left;
-			philo[i]->fork_left = philo[0]->fork_left;
-		}
+			philo[i]->fork_right = philo[0]->fork_left;
 		else
 			philo[i]->fork_right = philo[i + 1]->fork_left;
 		if (pthread_create(&philo[i]->philo, NULL, philo_routine, philo[i]))

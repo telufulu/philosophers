@@ -6,7 +6,7 @@
 /*   By: telufulu <telufulu@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/28 22:09:19 by telufulu          #+#    #+#             */
-/*   Updated: 2024/05/02 20:02:08 by telufulu         ###   ########.fr       */
+/*   Updated: 2024/05/03 17:59:51 by telufulu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,6 +77,7 @@ bool	check_dead(t_philo *philo)
 void	print_msg(t_mutex_value *stop, char *msg, t_philo *philo)
 {
 	pthread_mutex_lock(&stop->mutex);
-	printf("%lums philo %i %s\033[0m\n", now() - philo->start_time, philo->num, msg);
+	printf("%lums philo %i %s\033[0m\n", now() - philo->start_time, \
+		philo->num, msg);
 	pthread_mutex_unlock(&stop->mutex);
 }

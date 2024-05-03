@@ -6,7 +6,7 @@
 /*   By: telufulu <telufulu@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/28 21:54:29 by telufulu          #+#    #+#             */
-/*   Updated: 2024/05/02 20:02:20 by telufulu         ###   ########.fr       */
+/*   Updated: 2024/05/03 17:29:11 by telufulu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@
 # include <errno.h>
 # include <stdbool.h>
 # include <stdint.h>
+# include <limits.h>
 
 /******************************************************************************
  * Structs
@@ -46,6 +47,7 @@ typedef struct s_philo
 	uint64_t		time_eat;
 	uint64_t		time_sleep;
 	uint64_t		time_alive;
+	uint64_t		delay;
 	ssize_t			num_loops;
 	int				num;
 	uint64_t		start_time;
@@ -60,6 +62,7 @@ uint64_t		now(void);
 void			time_sleep(uint64_t msecs);
 void			free_mutex(t_mutex_value *mutex);
 void			free_all(t_mutex_value *dead, t_philo **philos);
+uint64_t		set_delay(size_t *args);
 
 //utils_init.c
 t_mutex_value	*new_mutex(void);

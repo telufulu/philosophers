@@ -6,7 +6,7 @@
 /*   By: telufulu <telufulu@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/29 00:56:03 by telufulu          #+#    #+#             */
-/*   Updated: 2024/05/02 20:13:04 by telufulu         ###   ########.fr       */
+/*   Updated: 2024/05/03 17:49:53 by telufulu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ bool	take_forks(t_philo *philo)
 		{
 			if (check_dead(philo))
 				return (false);
-			time_sleep(10);
+			time_sleep(philo->delay);
 		}
 	}
 	print_msg(philo->dead_flag, "\033[0;96mtake left fork", philo);
@@ -29,7 +29,7 @@ bool	take_forks(t_philo *philo)
 	{
 		if (check_dead(philo))
 			return (false);
-		time_sleep(10);
+		time_sleep(philo->delay);
 	}
 	print_msg(philo->dead_flag, "\033[0;94mtake right fork", philo);
 	return (true);
@@ -76,6 +76,8 @@ void	*philo_routine(void *arg)
 
 	philo = (t_philo *)arg;
 	philo->time_alive = now();
+	if (philo->num % 2)
+		time_sleep(philo->delay);
 	while (!one_is_dead(philo->dead_flag))
 	{
 		if (!take_forks(philo))
@@ -86,6 +88,7 @@ void	*philo_routine(void *arg)
 			return (NULL);
 		if (!philo_sleep(philo) || one_is_dead(philo->dead_flag))
 			return (NULL);
+		check_dead(philo);
 	}
 	return (NULL);
 }
