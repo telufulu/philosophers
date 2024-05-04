@@ -1,12 +1,14 @@
-NAME		=	Philosophers
+NAME		=	philo
 CC			=	cc
-CFLAGS		=	-Wall -Werror -Wextra -fsanitize=address -g3 -I $(INC)
+CFLAGS		=	-Wall -Werror -Wextra -I $(INC)
+SANITIZE	=	-fsanitize=
 INC			=	inc/
 
 SRCS		=	$(addprefix $(SRCS_DIR), $(SRCS_FILES))
 OBJS		=	$(addprefix $(OBJS_DIR), $(OBJS_FILES))
 OBJS_FILES	=	$(SRCS_FILES:%.c=%.o)
-SRCS_FILES	=	philosophers.c
+SRCS_FILES	=	philosophers.c utils_init.c libft_utils.c routines.c \
+				utils_threads.c utils_args.c utils.c
 SRCS_DIR	=	srcs/
 OBJS_DIR	=	objs/
 
@@ -28,15 +30,21 @@ WHITE		=	\033[0;97m
 
 all:	$(NAME)
 
+sanitize_leaks:		CFLAGS += $(SANITIZE)address -g3
+sanitize_leaks:		clean all
+
+sanitize_threads:	CFLAGS += $(SANITIZE)thread -pthread
+sanitize_threads:	clean all
+
 $(NAME):	$(OBJS)
-	echo "\nCompiling $(BLUE)$(NAME)$(DEF_COLOR)"
 	$(CC) $(CFLAGS) $(OBJS) -o $(NAME)
 	echo "$(BLUE)\n------------\n| Done! 👌 |\n------------\$(DEF_COLOR)"
 
 $(OBJS_DIR)%.o:	$(SRCS_DIR)%.c
-	[ -d $(OBJS_DIR) ] | mkdir -p $(OBJS_DIR)
+	if [ ! -d $(OBJS_DIR) ]; then echo "\nCompiling $(BLUE)$(NAME)$(DEF_COLOR)"; fi	
+	mkdir -p $(OBJS_DIR)
 	$(CC) $(CFLAGS) -c $< -o $@
-	printf "\33[2K\r$(GRAY)$(CC) $(CFLAGS) -c $< -o $@$(DEF_COLOR)"
+	echo  "\33[2K\r$(GRAY)$(CC) $(CFLAGS) -c $< -o $@$(DEF_COLOR)"
 
 clean:
 	echo "\nCleaning$(BLUE)...$(DEF_COLOR)"
